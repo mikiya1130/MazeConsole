@@ -1,20 +1,278 @@
 ﻿#include <stdio.h>
 #include <stdlib.h>
+#include <time.h>
 
-//プレイヤー
+//マス目(プレイヤー座標、壁生成開始座標)
 typedef struct {
-    int row;    //プレイヤー位置(行)
-    int column; //プレイヤー位置(列)
-} MazePlayer;
+    int row;
+    int column;
+} MazeCell;
 
 //迷路の一ブロック
-enum MazeKind {PATH, WALL, START, GOAL};    //ブロックの種類(道、壁、スタート、ゴール)
+enum MazeKind {PATH, WALL, EXWALL, START, GOAL};    //ブロックの種類(道、壁、スタート、ゴール)
 enum MazeFlag {FALSE, TRUE};                //ブロックが判明しているかどうか
 
 typedef struct {
     enum MazeKind kind; //種類(道、壁、スタート、ゴール)
-    enum mezeFlag flag; //ブロックが判明しているかどうか
+    enum MazeFlag flag; //ブロックが判明しているかどうか
 } MazeBlock;
+
+//方向
+enum MazeDirection {UP, DOWN, LEFT, RIGHT, Invalid};
+
+//壁伸ばし法で迷路生成
+void mazeCreate(MazeBlock *maze, int mazeRow, int mazeColumn){
+    int i, j;
+    int index;
+    int x, y;
+    int dir;
+
+    //壁生成開始候補座標リスト
+    MazeCell *mazeStartCells;
+
+    //壁生成開始候補座標リストの長さ
+    int mazeCellLength = 0;
+
+    //壁拡張可能方向リスト
+    int directions[4];
+
+    //配列の動的確保
+    mazeStartCells = (MazeCell *)malloc(sizeof(MazeCell) * ((mazeRow - 3) / 2) * ((mazeColumn - 3) / 2));
+
+    //マス目の初期化、壁伸ばし開始点の登録
+    for(i = 0; i < mazeRow; i++){
+        for(j = 0; j < mazeColumn; j++){
+            //外周を道、他を道で初期化
+            if(i == 0 || j == 0 || i == mazeRow - 1 || j == mazeColumn - 1){
+                maze[mazeColumn * i + j].kind = WALL;
+            }
+            else{
+                maze[mazeColumn * i + j].kind = PATH;
+
+                //外周ではない偶数座標を壁伸ばし開始点にしておく
+                if(i % 2 == 0 && j % 2 == 0){
+                    mazeStartCells[mazeCellLength].row    = i;
+                    mazeStartCells[mazeCellLength].column = j;
+                    mazeCellLength++;
+                }
+            }
+        }
+    }
+
+    //乱数の初期化
+    srand((unsigned)time(NULL));
+
+    //壁が拡張できなくなるまでループ
+    while(mazeCellLength > 0){
+        //ランダムに開始セルを取得
+        index = rand() % mazeCellLength;
+        x = mazeStartCells[index].row;
+        y = mazeStartCells[index].column;
+
+        //配列末尾の要素で上書きして、開始候補から削除
+        mazeStartCells[index].row = mazeStartCells[mazeCellLength - 1].row;
+        mazeStartCells[index].column = mazeStartCells[mazeCellLength - 1].column;
+
+        //リストの長さ更新
+        mazeCellLength--;
+
+        //既に壁の場合は何もしない
+        if(maze[mazeColumn * x + y].kind == WALL){
+            continue;
+        }
+
+        //拡張開始地点を壁にする
+        maze[mazeColumn * x + y].kind = EXWALL;
+
+        //壁拡張可能方向リストの初期化
+        for(i = 0; i < 4; i++){
+            directions[i] = TRUE;
+        }
+
+        //壁を生成拡張
+        while(  //全ての方向が探索済みになるまで(1つ以上TRUEの間ループ)
+            directions[0] == TRUE
+            || directions[1] == TRUE
+            || directions[2] == TRUE
+            || directions[3] == TRUE
+        ){
+            //拡張する方向
+            dir = rand() % 4;
+
+            //辿ってきた道 or 探索済みでないか判定
+            if(directions[dir] == FALSE){
+                continue;
+            }
+
+            switch(dir){
+                //上に移動
+                case UP:
+                    if( //拡張可能なとき(2つ先まで道)
+                        maze[mazeColumn * x + (y - 1)].kind == PATH
+                        && maze[mazeColumn * x + (y - 2)].kind == PATH
+                    ){
+                        //壁を拡張
+                        maze[mazeColumn * x + (y - 1)].kind = EXWALL;
+                        maze[mazeColumn * x + (y - 2)].kind = EXWALL;
+
+                        //座標更新
+                        y -= 2;
+
+                        //壁拡張可能方向リストの更新
+                        for(i = 0; i < 4; i++){
+                            directions[i] = TRUE;
+                        }
+
+                        //下は辿ってきた道
+                        directions[DOWN] = FALSE;
+                    }
+                    else if( //拡張可能なとき(2つ先が壁)
+                        maze[mazeColumn * x + (y - 1)].kind == PATH
+                        && maze[mazeColumn * x + (y - 2)].kind == WALL
+                    ){
+                        //壁を拡張
+                        maze[mazeColumn * x + (y - 1)].kind = EXWALL;
+
+                        //拡張終了(while文抜ける)用
+                        for(i = 0; i < 4; i++){
+                            directions[i] = FALSE;
+                        }
+                    }
+                    else{
+                        //上は拡張不可
+                        directions[UP] = FALSE;
+                    }
+                    break;
+
+                //下に移動
+                case DOWN:
+                    if( //拡張可能なとき(2つ先まで道)
+                        maze[mazeColumn * x + (y + 1)].kind == PATH
+                        && maze[mazeColumn * x + (y + 2)].kind == PATH
+                    ){
+                        //壁を拡張
+                        maze[mazeColumn * x + (y + 1)].kind = EXWALL;
+                        maze[mazeColumn * x + (y + 2)].kind = EXWALL;
+
+                        //座標更新
+                        y += 2;
+
+                        //壁拡張可能方向リストの更新
+                        for(i = 0; i < 4; i++){
+                            directions[i] = TRUE;
+                        }
+
+                        //上は辿ってきた道
+                        directions[UP] = FALSE;
+                    }
+                    else if( //拡張可能なとき(2つ先が壁)
+                        maze[mazeColumn * x + (y + 1)].kind == PATH
+                        && maze[mazeColumn * x + (y + 2)].kind == WALL
+                    ){
+                        //壁を拡張
+                        maze[mazeColumn * x + (y + 1)].kind = EXWALL;
+
+                        //拡張終了(while文抜ける)用
+                        for(i = 0; i < 4; i++){
+                            directions[i] = FALSE;
+                        }
+                    }
+                    else{
+                        //下は拡張不可
+                        directions[DOWN] = FALSE;
+                    }
+                    break;
+
+                //左に移動
+                case LEFT:
+                    if( //拡張可能なとき(2つ先まで道)
+                        maze[mazeColumn * (x - 1) + y].kind == PATH
+                        && maze[mazeColumn * (x - 2) + y].kind == PATH
+                    ){
+                        //壁を拡張
+                        maze[mazeColumn * (x - 1) + y].kind = EXWALL;
+                        maze[mazeColumn * (x - 2) + y].kind = EXWALL;
+
+                        //座標更新
+                        x -= 2;
+
+                        //壁拡張可能方向リストの更新
+                        for(i = 0; i < 4; i++){
+                            directions[i] = TRUE;
+                        }
+
+                        //右は辿ってきた道
+                        directions[RIGHT] = FALSE;
+                    }
+                    else if( //拡張可能なとき(2つ先が壁)
+                        maze[mazeColumn * (x - 1) + y].kind == PATH
+                        && maze[mazeColumn * (x - 2) + y].kind == WALL
+                    ){
+                        //壁を拡張
+                        maze[mazeColumn * (x - 1) + y].kind = EXWALL;
+
+                        //拡張終了(while文抜ける)用
+                        for(i = 0; i < 4; i++){
+                            directions[i] = FALSE;
+                        }
+                    }
+                    else{
+                        //左は拡張不可
+                        directions[LEFT] = FALSE;
+                    }
+                    break;
+
+                //右に移動
+                case RIGHT:
+                    if( //拡張可能なとき(2つ先まで道)
+                        maze[mazeColumn * (x + 1) + y].kind == PATH
+                        && maze[mazeColumn * (x + 2) + y].kind == PATH
+                    ){
+                        //壁を拡張
+                        maze[mazeColumn * (x + 1) + y].kind = EXWALL;
+                        maze[mazeColumn * (x + 2) + y].kind = EXWALL;
+
+                        //座標更新
+                        x += 2;
+
+                        //壁拡張可能方向リストの更新
+                        for(i = 0; i < 4; i++){
+                            directions[i] = TRUE;
+                        }
+
+                        //左は辿ってきた道
+                        directions[LEFT] = FALSE;
+                    }
+                    else if( //拡張可能なとき(2つ先が壁)
+                        maze[mazeColumn * (x + 1) + y].kind == PATH
+                        && maze[mazeColumn * (x + 2) + y].kind == WALL
+                    ){
+                        //壁を拡張
+                        maze[mazeColumn * (x + 1) + y].kind = EXWALL;
+
+                        //拡張終了(while文抜ける)用
+                        for(i = 0; i < 4; i++){
+                            directions[i] = FALSE;
+                        }
+                    }
+                    else{
+                        //右は拡張不可
+                        directions[RIGHT] = FALSE;
+                    }
+                    break;
+            }
+        }
+
+        //拡張中だった壁を確定させる
+        for(i = 0; i < mazeRow; i++){
+            for(j = 0; j < mazeColumn; j++){
+                if(maze[mazeColumn * i + j].kind == EXWALL){
+                    maze[mazeColumn * i + j].kind = WALL;
+                }
+            }
+        }
+    }
+}
 
 //プレイヤー初期化
 int MazePlayerInit(int *playerRow, int *playerColumn, MazeBlock *maze, int mazeRow, int mazeColumn){
@@ -64,9 +322,6 @@ void MazeDraw(int playerRow, int playerColumn, MazeBlock *maze, int mazeRow, int
         printf("\n");
     }
 }
-
-//方向
-enum MazeDirection {UP, DOWN, LEFT, RIGHT, Invalid};
 
 //プレイヤー移動
 void MazePlayerMove(int *playerRow, int *playerColumn, MazeBlock *maze, int mazeRow, int mazeColumn){
@@ -178,114 +433,40 @@ int MazeGoalCheck(int playerRow, int playerColumn, MazeBlock *maze, int mazeColu
 
 //迷路ゲーム
 void MazeGame(){
-    char fileName[100];
-    char buf[100];
-    FILE *fp;
-    int i, kind;
     int goalCheck = 0;
     int mazeRow, mazeColumn;
 
     //プレイヤー
-    MazePlayer player;
+    MazeCell player;
 
     //迷路
     MazeBlock *maze;
 
-    //ファイル読み込み
-    printf("ファイル名を入力してください：");
-
-    fgets(fileName, sizeof(fileName), stdin);
-
-    //改行を終端文字に書き換える
-    for(i = 0; i < 100; i++){
-        if(fileName[i] == '\n'){
-            fileName[i] = '\0';
-        }
-    }
-
-    if(fopen_s(&fp, fileName, "r") != 0){
-        //ファイルのオープンに失敗した場合、ゲームを開始できないので関数を終了する。
-        printf("ファイルが存在しません。\n");
-        return;
-    }
-
-    //迷路サイズ取得
-    if(fgets(buf, sizeof(buf), fp) != NULL){    //1行読み込み
-        if(sscanf_s(buf, "%d,%d", &mazeRow, &mazeColumn) != 2){
-            // 2つの数字を読み込めなかった場合失敗
-            printf("サイズが読み込めません。\n");
-            fclose(fp);
-            return;
-        }
-    }
-    else{
-        //データがない場合、fgetsが失敗する
-        printf("データがありません。\n");
-        fclose(fp);
-        return;
-    }
+    //ひとまずサイズ固定
+    mazeRow = 7;
+    mazeColumn = 7;
 
     //配列の動的確保
     maze = (MazeBlock *)malloc(sizeof(MazeBlock) * mazeRow * mazeColumn);
 
     if(maze == NULL){
         printf("メモリの確保に失敗しました。");
-        fclose(fp);
         return;
     }
 
-    //迷路設定
-    for(i = 0; i < mazeRow * mazeColumn; i++){
-        if(fgets(buf, sizeof(buf), fp) != NULL){    //1行読み込み
-            if(sscanf_s(buf, "%d", &kind) == 1){
-                switch(kind){
-                    case PATH:
-                    case WALL:
-                        maze[i].kind = kind;
-                        maze[i].flag = FALSE;
-                        break;
+    //壁伸ばし法で迷路生成
+    mazeCreate(maze, mazeRow, mazeColumn);
 
-                    case GOAL:
-                        goalCheck = 1;
-                    case START:
-                        maze[i].kind = kind;
-                        maze[i].flag = TRUE;
-                        break;
-
-                    default:
-                        //ファイルのデータが正しい数値ではなかった場合
-                        printf("不正なデータが存在します。\n");
-                        fclose(fp);
-                        free(maze);
-                        return;
-                        break;
-                }
-            }
-            else{
-                //数字がなかった場合、sscanfが失敗する
-                printf("不正なデータが存在します。\n");
-                fclose(fp);
-                free(maze);
-                return;
-            }
-        }
-        else{
-            //データが途中で終わっている場合、fgetsが失敗する
-            printf("データ数が足りません。\n");
-            fclose(fp);
-            free(maze);
-            return;
-        }
-    }
-
-    fclose(fp);
+    //スタートとゴール位置
+    maze[mazeColumn * 1 + 1].kind = START;
+    maze[mazeColumn * (mazeRow - 2) + (mazeColumn - 2)].kind = GOAL;
 
     //ゴールが存在するか確認
-    if(goalCheck == 0){
-        printf("ゴールが存在しません。\n");
-        free(maze);
-        return;
-    }
+    // if(goalCheck == 0){
+    //     printf("ゴールが存在しません。\n");
+    //     free(maze);
+    //     return;
+    // }
 
     //プレイヤー初期化
     if(MazePlayerInit(&player.row, &player.column, maze, mazeRow, mazeColumn) == -1){
