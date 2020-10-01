@@ -7,6 +7,7 @@
 int MazeTitle(){
     int menu = -1;
 
+    //コンソールクリア
     cls();
 
     printf("＊＊＊迷路ゲーム＊＊＊\n\n");

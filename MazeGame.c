@@ -17,6 +17,7 @@ void MazeGame(){
     //迷路
     MazeBlock *maze;
 
+    //コンソールクリア
     cls();
 
     //迷路サイズ入力
@@ -29,6 +30,7 @@ void MazeGame(){
         sscanf_s(buf, "%d", &mazeRow);
     }
 
+    //コンソールクリア
     cls();
 
     printf("迷路の幅を入力してください(5以上99以下の奇数)：");
@@ -45,6 +47,7 @@ void MazeGame(){
 
     //if(maze == NULL){
     if(maze == NULL){
+        //コンソールクリア
         cls();
 
         printf("メモリの確保に失敗しました。\n");
@@ -340,6 +343,7 @@ void mazeCreate(MazeBlock *maze, int mazeRow, int mazeColumn){
 void MazeDraw(int playerRow, int playerColumn, MazeBlock *maze, int mazeRow, int mazeColumn){
     int i, j;
 
+    //コンソールクリア
     cls();
 
     for(i = 0; i < mazeRow; i++){  //行
