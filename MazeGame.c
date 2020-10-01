@@ -34,7 +34,7 @@ void MazeGame(){
     }
 
     //壁伸ばし法で迷路生成
-    mazeCreate(maze, mazeRow, mazeColumn);
+    MazeCreate(maze, mazeRow, mazeColumn);
 
     //プレイヤー初期化
     if(MazePlayerInit(&player.row, &player.column, maze, mazeRow, mazeColumn) == -1){
@@ -92,29 +92,33 @@ void MazeSizeInput(int *mazeRow, int *mazeColumn){
     }
 }
 
+//壁拡張可能方向リストの値を一括変更
+void resetArray(enum MazeDirection arr[], int n, enum MazeFlag bl){
+    for(int i = 0; i < n; i++){
+        arr[i] = bl;
+    }
+}
+
 //壁伸ばし法で迷路生成
-void mazeCreate(MazeBlock *maze, int mazeRow, int mazeColumn){
+void MazeCreate(MazeBlock *maze, int mazeRow, int mazeColumn){
     int i, j;
     int index;
     int x, y;
     int dir;
 
     //壁生成開始候補座標リスト
-    MazeCell *mazeStartCells;
+    MazeCell *mazeStartCells = (MazeCell *)malloc(sizeof(MazeCell) * ((mazeRow - 3) / 2) * ((mazeColumn - 3) / 2));;
 
     //壁生成開始候補座標リストの長さ
     int mazeCellLength = 0;
 
     //壁拡張可能方向リスト
-    int directions[4];
-
-    //配列の動的確保
-    mazeStartCells = (MazeCell *)malloc(sizeof(MazeCell) * ((mazeRow - 3) / 2) * ((mazeColumn - 3) / 2));
+    enum MazeDirection directions[4];
 
     //マス目の初期化、壁伸ばし開始点の登録
     for(i = 0; i < mazeRow; i++){
         for(j = 0; j < mazeColumn; j++){
-            //外周を道、他を道で初期化
+            //外周を壁、他を道で初期化
             if(i == 0 || j == 0 || i == mazeRow - 1 || j == mazeColumn - 1){
                 maze[mazeColumn * i + j].kind = WALL;
             }
@@ -134,7 +138,7 @@ void mazeCreate(MazeBlock *maze, int mazeRow, int mazeColumn){
     //乱数の初期化
     srand((unsigned)time(NULL));
 
-    //壁が拡張できなくなるまでループ
+    //壁生成開始候補がなくなる(＝壁生成完了)までループ
     while(mazeCellLength > 0){
         //ランダムに開始セルを取得
         index = rand() % mazeCellLength;
@@ -153,13 +157,11 @@ void mazeCreate(MazeBlock *maze, int mazeRow, int mazeColumn){
             continue;
         }
 
-        //拡張開始地点を壁にする
+        //拡張開始地点を壁(拡張中)にする
         maze[mazeColumn * x + y].kind = EXWALL;
 
-        //壁拡張可能方向リストの初期化
-        for(i = 0; i < 4; i++){
-            directions[i] = TRUE;
-        }
+        //壁拡張可能方向リストをTRUEで初期化
+        resetArray(directions, sizeof(directions) / sizeof(directions[0]), TRUE);
 
         //壁を生成拡張
         while(  //全ての方向が探索済みになるまで(1つ以上TRUEの間ループ)
@@ -190,10 +192,8 @@ void mazeCreate(MazeBlock *maze, int mazeRow, int mazeColumn){
                         //座標更新
                         y -= 2;
 
-                        //壁拡張可能方向リストの更新
-                        for(i = 0; i < 4; i++){
-                            directions[i] = TRUE;
-                        }
+                        //壁拡張可能方向リストをTRUEでリセット
+                        resetArray(directions, sizeof(directions) / sizeof(directions[0]), TRUE);
 
                         //下は辿ってきた道
                         directions[DOWN] = FALSE;
@@ -205,10 +205,8 @@ void mazeCreate(MazeBlock *maze, int mazeRow, int mazeColumn){
                         //壁を拡張
                         maze[mazeColumn * x + (y - 1)].kind = EXWALL;
 
-                        //拡張終了(while文抜ける)用
-                        for(i = 0; i < 4; i++){
-                            directions[i] = FALSE;
-                        }
+                        //拡張終了(while文抜ける用にFALSE埋め)
+                        resetArray(directions, sizeof(directions) / sizeof(directions[0]), FALSE);
                     }
                     else{
                         //上は拡張不可
@@ -229,10 +227,8 @@ void mazeCreate(MazeBlock *maze, int mazeRow, int mazeColumn){
                         //座標更新
                         y += 2;
 
-                        //壁拡張可能方向リストの更新
-                        for(i = 0; i < 4; i++){
-                            directions[i] = TRUE;
-                        }
+                        //壁拡張可能方向リストをTRUEでリセット
+                        resetArray(directions, sizeof(directions) / sizeof(directions[0]), TRUE);
 
                         //上は辿ってきた道
                         directions[UP] = FALSE;
@@ -244,10 +240,8 @@ void mazeCreate(MazeBlock *maze, int mazeRow, int mazeColumn){
                         //壁を拡張
                         maze[mazeColumn * x + (y + 1)].kind = EXWALL;
 
-                        //拡張終了(while文抜ける)用
-                        for(i = 0; i < 4; i++){
-                            directions[i] = FALSE;
-                        }
+                        //拡張終了(while文抜ける用にFALSE埋め)
+                        resetArray(directions, sizeof(directions) / sizeof(directions[0]), FALSE);
                     }
                     else{
                         //下は拡張不可
@@ -268,10 +262,8 @@ void mazeCreate(MazeBlock *maze, int mazeRow, int mazeColumn){
                         //座標更新
                         x -= 2;
 
-                        //壁拡張可能方向リストの更新
-                        for(i = 0; i < 4; i++){
-                            directions[i] = TRUE;
-                        }
+                        //壁拡張可能方向リストをTRUEでリセット
+                        resetArray(directions, sizeof(directions) / sizeof(directions[0]), TRUE);
 
                         //右は辿ってきた道
                         directions[RIGHT] = FALSE;
@@ -283,10 +275,8 @@ void mazeCreate(MazeBlock *maze, int mazeRow, int mazeColumn){
                         //壁を拡張
                         maze[mazeColumn * (x - 1) + y].kind = EXWALL;
 
-                        //拡張終了(while文抜ける)用
-                        for(i = 0; i < 4; i++){
-                            directions[i] = FALSE;
-                        }
+                        //拡張終了(while文抜ける用にFALSE埋め)
+                        resetArray(directions, sizeof(directions) / sizeof(directions[0]), FALSE);
                     }
                     else{
                         //左は拡張不可
@@ -307,10 +297,8 @@ void mazeCreate(MazeBlock *maze, int mazeRow, int mazeColumn){
                         //座標更新
                         x += 2;
 
-                        //壁拡張可能方向リストの更新
-                        for(i = 0; i < 4; i++){
-                            directions[i] = TRUE;
-                        }
+                        //壁拡張可能方向リストをTRUEでリセット
+                        resetArray(directions, sizeof(directions) / sizeof(directions[0]), TRUE);
 
                         //左は辿ってきた道
                         directions[LEFT] = FALSE;
@@ -322,10 +310,8 @@ void mazeCreate(MazeBlock *maze, int mazeRow, int mazeColumn){
                         //壁を拡張
                         maze[mazeColumn * (x + 1) + y].kind = EXWALL;
 
-                        //拡張終了(while文抜ける)用
-                        for(i = 0; i < 4; i++){
-                            directions[i] = FALSE;
-                        }
+                        //拡張終了(while文抜ける用にFALSE埋め)
+                        resetArray(directions, sizeof(directions) / sizeof(directions[0]), FALSE);
                     }
                     else{
                         //右は拡張不可
