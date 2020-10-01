@@ -56,16 +56,8 @@ void MazePlayerMove(int *playerRow, int *playerColumn, MazeBlock *maze, int maze
 
                 if(maze[mazeColumn * ((*playerRow) - 1) + (*playerColumn)].kind != WALL){   //壁かどうか確認
                     *playerRow -= 1;    //移動
-                    //printf("\n上に移動しました。\n");
-                }
-                else{
-                    //printf("\n壁です。\n");
                 }
             }
-            else{
-                //printf("\n範囲外です\n");
-            }
-
             break;
 
         //下移動
@@ -75,16 +67,8 @@ void MazePlayerMove(int *playerRow, int *playerColumn, MazeBlock *maze, int maze
 
                 if(maze[mazeColumn * ((*playerRow) + 1) + (*playerColumn)].kind != WALL){   //壁かどうか確認
                     *playerRow += 1;    //移動
-                    //printf("\n下に移動しました。\n");
-                }
-                else{
-                    //printf("\n壁です。\n");
                 }
             }
-            else{
-                //printf("\n範囲外です\n");
-            }
-
             break;
 
         //左移動
@@ -94,16 +78,8 @@ void MazePlayerMove(int *playerRow, int *playerColumn, MazeBlock *maze, int maze
 
                 if(maze[mazeColumn * (*playerRow) + ((*playerColumn) - 1)].kind != WALL){   //壁かどうか確認
                     *playerColumn -= 1;    //移動
-                    //printf("\n左に移動しました。\n");
-                }
-                else{
-                    //printf("\n壁です。\n");
                 }
             }
-            else{
-                //printf("\n範囲外です\n");
-            }
-
             break;
 
         //右移動
@@ -113,16 +89,8 @@ void MazePlayerMove(int *playerRow, int *playerColumn, MazeBlock *maze, int maze
 
                 if(maze[mazeColumn * (*playerRow) + ((*playerColumn) + 1)].kind != WALL){   //壁かどうか確認
                     *playerColumn += 1;    //移動
-                    //printf("\n右に移動しました。\n");
-                }
-                else{
-                    //printf("\n壁です。\n");
                 }
             }
-            else{
-                //printf("\n範囲外です\n");
-            }
-
             break;
     }
 }
