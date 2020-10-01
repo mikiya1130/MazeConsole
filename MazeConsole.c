@@ -435,6 +435,7 @@ int MazeGoalCheck(int playerRow, int playerColumn, MazeBlock *maze, int mazeColu
 void MazeGame(){
     int goalCheck = 0;
     int mazeRow, mazeColumn;
+    char buf[100];
 
     //プレイヤー
     MazeCell player;
@@ -442,9 +443,19 @@ void MazeGame(){
     //迷路
     MazeBlock *maze;
 
-    //ひとまずサイズ固定
-    mazeRow = 7;
-    mazeColumn = 7;
+    //迷路サイズ入力
+    printf("迷路の高さを入力してください(5以上の奇数)：");
+    fgets(buf, sizeof(buf), stdin);
+    sscanf_s(buf, "%d", &mazeRow);
+    printf("迷路の幅を入力してください(5以上の奇数)：");
+    fgets(buf, sizeof(buf), stdin);
+    sscanf_s(buf, "%d", &mazeColumn);
+
+    //迷路サイズ入力値チェック(5未満は5に、偶数は+1した奇数に)
+    if(mazeRow    < 5) mazeRow    = 5;
+    if(mazeColumn < 5) mazeColumn = 5;
+    if(mazeRow    % 2 == 0) mazeRow++;
+    if(mazeColumn % 2 == 0) mazeColumn++;
 
     //配列の動的確保
     maze = (MazeBlock *)malloc(sizeof(MazeBlock) * mazeRow * mazeColumn);
