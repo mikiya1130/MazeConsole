@@ -324,6 +324,17 @@ void MazeDraw(int playerRow, int playerColumn, MazeBlock *maze, int mazeRow, int
     }
 }
 
+//矢印キー入力取得
+int getArrowKey(){
+    switch(_getch()){
+        case 72: return UP;    break;
+        case 80: return DOWN;  break;
+        case 75: return LEFT;  break;
+        case 77: return RIGHT; break;
+        default: return Invalid; break;
+    }
+}
+
 //プレイヤー移動
 void MazePlayerMove(int *playerRow, int *playerColumn, MazeBlock *maze, int mazeRow, int mazeColumn){
     int direction = -1;
@@ -334,11 +345,13 @@ void MazePlayerMove(int *playerRow, int *playerColumn, MazeBlock *maze, int maze
     printf("%d:右\n", RIGHT);
     printf("数字を入力してください：");
 
-    direction = _getch() - '0';
+    //direction = _getch() - '0';
+    direction = getArrowKey();
 
     while(direction < 0 || direction > (Invalid - 1)){  //入力が正しい場合まで繰り返す
         printf("入力が不正です。再入力してください：");
-        direction = _getch() - '0';
+        //direction = _getch() - '0';
+        direction = getArrowKey();
     }
 
     switch(direction){
