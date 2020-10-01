@@ -345,12 +345,10 @@ void MazePlayerMove(int *playerRow, int *playerColumn, MazeBlock *maze, int maze
     printf("%d:右\n", RIGHT);
     printf("数字を入力してください：");
 
-    //direction = _getch() - '0';
     direction = getArrowKey();
 
     while(direction < 0 || direction > (Invalid - 1)){  //入力が正しい場合まで繰り返す
         printf("入力が不正です。再入力してください：");
-        //direction = _getch() - '0';
         direction = getArrowKey();
     }
 
@@ -520,7 +518,6 @@ enum MazeMenu {GAMESTART, EXIT};
 
 //タイトル
 int MazeTitle(){
-    char buf[100];
     int menu = -1;
 
     printf("\n\n＊＊＊迷路ゲーム＊＊＊\n\n");
