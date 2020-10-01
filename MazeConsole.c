@@ -486,13 +486,6 @@ void MazeGame(){
     maze[mazeColumn * 1 + 1].kind = START;
     maze[mazeColumn * (mazeRow - 2) + (mazeColumn - 2)].kind = GOAL;
 
-    //ゴールが存在するか確認
-    // if(goalCheck == 0){
-    //     printf("ゴールが存在しません。\n");
-    //     free(maze);
-    //     return;
-    // }
-
     //プレイヤー初期化
     if(MazePlayerInit(&player.row, &player.column, maze, mazeRow, mazeColumn) == -1){
         //関数MazePlayerInitが-1を返すとき初期化に失敗している
