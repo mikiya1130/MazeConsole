@@ -9,7 +9,6 @@
 void MazeGame(){
     int goalCheck = 0;
     int mazeRow, mazeColumn;
-    char buf[100];
 
     //プレイヤー
     MazeCell player;
@@ -17,30 +16,8 @@ void MazeGame(){
     //迷路
     MazeBlock *maze;
 
-    //コンソールクリア
-    cls();
-
     //迷路サイズ入力
-    printf("迷路の高さを入力してください(5以上99以下の奇数)：");
-    fgets(buf, sizeof(buf), stdin);
-    sscanf_s(buf, "%d", &mazeRow);
-    while(mazeRow < 5 || mazeRow > 99 || mazeRow % 2 == 0){
-        printf("\n入力値が不正です。迷路の高さを入力してください(5以上99以下の奇数)：");
-        fgets(buf, sizeof(buf), stdin);
-        sscanf_s(buf, "%d", &mazeRow);
-    }
-
-    //コンソールクリア
-    cls();
-
-    printf("迷路の幅を入力してください(5以上99以下の奇数)：");
-    fgets(buf, sizeof(buf), stdin);
-    sscanf_s(buf, "%d", &mazeColumn);
-    while(mazeColumn < 5 || mazeColumn > 99 || mazeColumn % 2 == 0){
-        printf("\n入力値が不正です。迷路の幅を入力してください(5以上99以下の奇数)：");
-        fgets(buf, sizeof(buf), stdin);
-        sscanf_s(buf, "%d", &mazeColumn);
-    }
+    MazeSizeInput(&mazeRow, &mazeColumn);
 
     //配列の動的確保
     maze = (MazeBlock *)malloc(sizeof(MazeBlock) * mazeRow * mazeColumn);
@@ -85,6 +62,40 @@ void MazeGame(){
 
     free(maze);
 }
+
+//迷路サイズ入力
+void MazeSizeInput(int *mazeRow, int *mazeColumn){
+    char buf[5];
+
+    //コンソールクリア
+    cls();
+
+    //高さ入力
+    printf("迷路の高さを入力してください(5以上99以下の奇数)：");
+    fgets(buf, sizeof(buf), stdin);
+    sscanf_s(buf, "%d", mazeRow);
+
+    while(*mazeRow < 5 || *mazeRow > 99 || *mazeRow % 2 == 0){
+        printf("\n入力値が不正です。迷路の高さを入力してください(5以上99以下の奇数)：");
+        fgets(buf, sizeof(buf), stdin);
+        sscanf_s(buf, "%d", mazeRow);
+    }
+
+    //コンソールクリア
+    cls();
+
+    //幅入力
+    printf("迷路の幅を入力してください(5以上99以下の奇数)：");
+    fgets(buf, sizeof(buf), stdin);
+    sscanf_s(buf, "%d", mazeColumn);
+
+    while(*mazeColumn < 5 || *mazeColumn > 99 || *mazeColumn % 2 == 0){
+        printf("\n入力値が不正です。迷路の幅を入力してください(5以上99以下の奇数)：");
+        fgets(buf, sizeof(buf), stdin);
+        sscanf_s(buf, "%d", mazeColumn);
+    }
+}
+
 //壁伸ばし法で迷路生成
 void mazeCreate(MazeBlock *maze, int mazeRow, int mazeColumn){
     int i, j;
