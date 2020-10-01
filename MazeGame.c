@@ -346,7 +346,9 @@ void MazeDraw(int playerRow, int playerColumn, MazeBlock *maze, int mazeRow, int
     for(i = 0; i < mazeRow; i++){  //行
         for(j = 0; j < mazeColumn; j++){   //列
             if(i == playerRow && j == playerColumn){    //プレイヤー位置
-                printf("Ｐ");
+                printf("\033[36m"); //シアン
+                printf("●");
+                printf("\033[39m"); //元に戻す
             }
             else if(maze[mazeColumn * i + j].flag == FALSE){   //ブロックが判明していない場合
                 printf("？");
@@ -354,10 +356,14 @@ void MazeDraw(int playerRow, int playerColumn, MazeBlock *maze, int mazeRow, int
             else{
                 switch(maze[mazeColumn * i + j].kind){
                     case WALL:
-                        printf("□");    //壁
+                        printf("\033[47m"); //背景灰色
+                        printf("　");    //壁
+                        printf("\033[49m"); //背景戻す
                         break;
                     case GOAL:
-                        printf("Ｇ");    //ゴール
+                        printf("\033[36m"); //シアン
+                        printf("○");    //ゴール
+                        printf("\033[39m"); //元に戻す
                         break;
                     default:
                         printf("　");    //その他(道、スタート)
