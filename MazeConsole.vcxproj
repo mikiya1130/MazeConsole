@@ -139,7 +139,19 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="MazeCommon.c" />
     <ClCompile Include="MazeConsole.c" />
+    <ClCompile Include="MazeGame.c" />
+    <ClCompile Include="MazePlayer.c" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="MazeCommon.h" />
+    <ClInclude Include="MazeGame.h" />
+    <ClInclude Include="MazePlayer.h" />
+    <ClInclude Include="resource.h" />
+  </ItemGroup>
+  <ItemGroup>
+    <ResourceCompile Include="MazeConsole.rc" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
