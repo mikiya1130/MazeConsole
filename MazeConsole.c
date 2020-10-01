@@ -1,6 +1,7 @@
 ﻿#include <stdio.h>
 #include <stdlib.h>
 #include <time.h>
+#include <conio.h>
 
 //マス目(プレイヤー座標、壁生成開始座標)
 typedef struct {
@@ -325,7 +326,6 @@ void MazeDraw(int playerRow, int playerColumn, MazeBlock *maze, int mazeRow, int
 
 //プレイヤー移動
 void MazePlayerMove(int *playerRow, int *playerColumn, MazeBlock *maze, int mazeRow, int mazeColumn){
-    char buf[100];
     int direction = -1;
 
     printf("%d:上\n", UP);
@@ -334,13 +334,11 @@ void MazePlayerMove(int *playerRow, int *playerColumn, MazeBlock *maze, int maze
     printf("%d:右\n", RIGHT);
     printf("数字を入力してください：");
 
-    fgets(buf, sizeof(buf), stdin); //文字列で入力を読み込む
-    sscanf_s(buf, "%d", &direction);  //数字にできる場合は変換(できなければ何もしない)
+    direction = _getch() - '0';
 
     while(direction < 0 || direction > (Invalid - 1)){  //入力が正しい場合まで繰り返す
         printf("入力が不正です。再入力してください：");
-        fgets(buf, sizeof(buf), stdin);
-        sscanf_s(buf, "%d", &direction);
+        direction = _getch() - '0';
     }
 
     switch(direction){
@@ -520,13 +518,11 @@ int MazeTitle(){
 
     printf("メニューを選んでください：");
 
-    fgets(buf, sizeof(buf), stdin);
-    sscanf_s(buf, "%d", &menu);
+    menu = _getch() - '0';
 
     while(menu < 0 || menu > EXIT){
         printf("入力が不正です。再入力してください：");
-        fgets(buf, sizeof(buf), stdin);
-        sscanf_s(buf, "%d", &menu);
+        menu = _getch() - '0';
     }
 
     return menu;
