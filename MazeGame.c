@@ -36,10 +36,6 @@ void MazeGame(){
     //壁伸ばし法で迷路生成
     mazeCreate(maze, mazeRow, mazeColumn);
 
-    //スタートとゴール位置
-    maze[mazeColumn * 1 + 1].kind = START;
-    maze[mazeColumn * (mazeRow - 2) + (mazeColumn - 2)].kind = GOAL;
-
     //プレイヤー初期化
     if(MazePlayerInit(&player.row, &player.column, maze, mazeRow, mazeColumn) == -1){
         //関数MazePlayerInitが-1を返すとき初期化に失敗している
@@ -348,6 +344,10 @@ void mazeCreate(MazeBlock *maze, int mazeRow, int mazeColumn){
             }
         }
     }
+
+    //スタートとゴール位置
+    maze[mazeColumn * 1 + 1].kind = START;
+    maze[mazeColumn * (mazeRow - 2) + (mazeColumn - 2)].kind = GOAL;
 }
 
 //迷路表示
