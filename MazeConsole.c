@@ -298,6 +298,9 @@ int MazePlayerInit(int *playerRow, int *playerColumn, MazeBlock *maze, int mazeR
 void MazeDraw(int playerRow, int playerColumn, MazeBlock *maze, int mazeRow, int mazeColumn){
     int i, j;
 
+    system("cls");
+    printf("\n\n");
+
     for(i = 0; i < mazeRow; i++){  //行
         for(j = 0; j < mazeColumn; j++){   //列
             if(i == playerRow && j == playerColumn){    //プレイヤー位置
@@ -326,12 +329,17 @@ void MazeDraw(int playerRow, int playerColumn, MazeBlock *maze, int mazeRow, int
 
 //矢印キー入力取得
 int getArrowKey(){
-    switch(_getch()){
-        case 72: return UP;    break;
-        case 80: return DOWN;  break;
-        case 75: return LEFT;  break;
-        case 77: return RIGHT; break;
-        default: return Invalid; break;
+    if(_getch() == 224){
+        switch(_getch()){
+            case 72: return UP;    break;
+            case 80: return DOWN;  break;
+            case 75: return LEFT;  break;
+            case 77: return RIGHT; break;
+            default: return Invalid; break;
+        }
+    }
+    else{
+        return Invalid;
     }
 }
 
@@ -339,16 +347,9 @@ int getArrowKey(){
 void MazePlayerMove(int *playerRow, int *playerColumn, MazeBlock *maze, int mazeRow, int mazeColumn){
     int direction = -1;
 
-    printf("%d:上\n", UP);
-    printf("%d:下\n", DOWN);
-    printf("%d:左\n", LEFT);
-    printf("%d:右\n", RIGHT);
-    printf("数字を入力してください：");
-
-    direction = getArrowKey();
+    printf("\n矢印キーで移動");
 
     while(direction < 0 || direction > (Invalid - 1)){  //入力が正しい場合まで繰り返す
-        printf("入力が不正です。再入力してください：");
         direction = getArrowKey();
     }
 
@@ -360,14 +361,14 @@ void MazePlayerMove(int *playerRow, int *playerColumn, MazeBlock *maze, int maze
 
                 if(maze[mazeColumn * ((*playerRow) - 1) + (*playerColumn)].kind != WALL){   //壁かどうか確認
                     *playerRow -= 1;    //移動
-                    printf("\n上に移動しました。\n");
+                    //printf("\n上に移動しました。\n");
                 }
                 else{
-                    printf("\n壁です。\n");
+                    //printf("\n壁です。\n");
                 }
             }
             else{
-                printf("\n範囲外です\n");
+                //printf("\n範囲外です\n");
             }
 
             break;
@@ -379,14 +380,14 @@ void MazePlayerMove(int *playerRow, int *playerColumn, MazeBlock *maze, int maze
 
                 if(maze[mazeColumn * ((*playerRow) + 1) + (*playerColumn)].kind != WALL){   //壁かどうか確認
                     *playerRow += 1;    //移動
-                    printf("\n下に移動しました。\n");
+                    //printf("\n下に移動しました。\n");
                 }
                 else{
-                    printf("\n壁です。\n");
+                    //printf("\n壁です。\n");
                 }
             }
             else{
-                printf("\n範囲外です\n");
+                //printf("\n範囲外です\n");
             }
 
             break;
@@ -398,14 +399,14 @@ void MazePlayerMove(int *playerRow, int *playerColumn, MazeBlock *maze, int maze
 
                 if(maze[mazeColumn * (*playerRow) + ((*playerColumn) - 1)].kind != WALL){   //壁かどうか確認
                     *playerColumn -= 1;    //移動
-                    printf("\n左に移動しました。\n");
+                    //printf("\n左に移動しました。\n");
                 }
                 else{
-                    printf("\n壁です。\n");
+                    //printf("\n壁です。\n");
                 }
             }
             else{
-                printf("\n範囲外です\n");
+                //printf("\n範囲外です\n");
             }
 
             break;
@@ -417,14 +418,14 @@ void MazePlayerMove(int *playerRow, int *playerColumn, MazeBlock *maze, int maze
 
                 if(maze[mazeColumn * (*playerRow) + ((*playerColumn) + 1)].kind != WALL){   //壁かどうか確認
                     *playerColumn += 1;    //移動
-                    printf("\n右に移動しました。\n");
+                    //printf("\n右に移動しました。\n");
                 }
                 else{
-                    printf("\n壁です。\n");
+                    //printf("\n壁です。\n");
                 }
             }
             else{
-                printf("\n範囲外です\n");
+                //printf("\n範囲外です\n");
             }
 
             break;
@@ -434,7 +435,6 @@ void MazePlayerMove(int *playerRow, int *playerColumn, MazeBlock *maze, int maze
 //ゴール判定
 int MazeGoalCheck(int playerRow, int playerColumn, MazeBlock *maze, int mazeColumn){
     if(maze[mazeColumn * playerRow + playerColumn].kind == GOAL){ //プレイヤー位置がゴール地点に等しい
-        printf("ゴール！\n");
         return 1;
     }
     return 0;
@@ -452,21 +452,27 @@ void MazeGame(){
     //迷路
     MazeBlock *maze;
 
+    system("cls");
+    printf("\n\n");
+
     //迷路サイズ入力
     printf("迷路の高さを入力してください(5以上99以下の奇数)：");
     fgets(buf, sizeof(buf), stdin);
     sscanf_s(buf, "%d", &mazeRow);
     while(mazeRow < 5 || mazeRow > 99 || mazeRow % 2 == 0){
-        printf("入力値が不正です。迷路の高さを入力してください(5以上99以下の奇数)：");
+        printf("\n入力値が不正です。迷路の高さを入力してください(5以上99以下の奇数)：");
         fgets(buf, sizeof(buf), stdin);
         sscanf_s(buf, "%d", &mazeRow);
     }
+
+    system("cls");
+    printf("\n\n");
 
     printf("迷路の幅を入力してください(5以上99以下の奇数)：");
     fgets(buf, sizeof(buf), stdin);
     sscanf_s(buf, "%d", &mazeColumn);
     while(mazeColumn < 5 || mazeColumn > 99 || mazeColumn % 2 == 0){
-        printf("入力値が不正です。迷路の幅を入力してください(5以上99以下の奇数)：");
+        printf("\n入力値が不正です。迷路の幅を入力してください(5以上99以下の奇数)：");
         fgets(buf, sizeof(buf), stdin);
         sscanf_s(buf, "%d", &mazeColumn);
     }
@@ -474,8 +480,14 @@ void MazeGame(){
     //配列の動的確保
     maze = (MazeBlock *)malloc(sizeof(MazeBlock) * mazeRow * mazeColumn);
 
+    //if(maze == NULL){
     if(maze == NULL){
-        printf("メモリの確保に失敗しました。");
+        system("cls");
+        printf("\n\n");
+
+        printf("メモリの確保に失敗しました。\n");
+        printf("タイトルに戻ります。\n\n");
+        system("pause");
         return;
     }
 
@@ -503,6 +515,9 @@ void MazeGame(){
     //迷路最終結果表示
     MazeDraw(player.row, player.column, maze, mazeRow, mazeColumn);
 
+    printf("\nゴール！\n\n");
+    system("pause");
+
     free(maze);
 }
 
@@ -513,18 +528,16 @@ enum MazeMenu {GAMESTART, EXIT};
 int MazeTitle(){
     int menu = -1;
 
-    printf("\n\n＊＊＊迷路ゲーム＊＊＊\n\n");
+    system("cls");
+    printf("\n\n");
+
+    printf("＊＊＊迷路ゲーム＊＊＊\n\n");
 
     printf("メニュー\n");
     printf("%d:ゲーム開始\n", GAMESTART);
-    printf("%d:終了\n", EXIT);
-
-    printf("メニューを選んでください：");
-
-    menu = _getch() - '0';
+    printf("%d:終了", EXIT);
 
     while(menu < 0 || menu > EXIT){
-        printf("入力が不正です。再入力してください：");
         menu = _getch() - '0';
     }
 
@@ -537,7 +550,6 @@ int main(void){
     while(1){
         //メニュー選択
         menu = MazeTitle();
-        printf("\n");
 
         if(menu == EXIT){   //EXITならwhileループを抜けて終了
             break;
