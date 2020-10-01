@@ -141,10 +141,6 @@
   <ItemGroup>
     <ClCompile Include="MazeConsole.c" />
   </ItemGroup>
-  <ItemGroup>
-    <Text Include="maze.txt" />
-    <Text Include="maze6_8.txt" />
-  </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
   </ImportGroup>

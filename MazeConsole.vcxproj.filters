@@ -19,12 +19,4 @@
       <Filter>ソース ファイル</Filter>
     </ClCompile>
   </ItemGroup>
-  <ItemGroup>
-    <Text Include="maze.txt">
-      <Filter>ソース ファイル</Filter>
-    </Text>
-    <Text Include="maze6_8.txt">
-      <Filter>ソース ファイル</Filter>
-    </Text>
-  </ItemGroup>
 </Project>
