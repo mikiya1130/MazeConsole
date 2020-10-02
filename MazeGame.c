@@ -110,6 +110,11 @@ void MazeGame(int menu){
     }
 
     //迷路最終結果表示
+    for(i = 0; i < mazeRow; i++){
+        for(j = 0; j < mazeColumn; j++){
+            maze[mazeColumn * i + j].flag = TRUE;   //道を全て表示
+        }
+    }
     MazeDraw(player.row, player.column, maze, mazeRow, mazeColumn);
 
     printf("\nゴール！\n\n");
