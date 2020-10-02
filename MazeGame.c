@@ -83,6 +83,8 @@ void MazeSizeInput(int *mazeRow, int *mazeColumn){
     //コンソールクリア
     cls();
 
+    printf("\033[?25h");    //カーソル表示
+
     //高さ入力
     printf("迷路の高さを入力してください(5以上99以下の奇数)：");
     fgets(buf, sizeof(buf), stdin);
@@ -107,6 +109,8 @@ void MazeSizeInput(int *mazeRow, int *mazeColumn){
         fgets(buf, sizeof(buf), stdin);
         sscanf_s(buf, "%d", mazeColumn);
     }
+
+    printf("\033[?25l");    //カーソル非表示
 }
 
 //壁拡張可能方向リストの値を一括変更
