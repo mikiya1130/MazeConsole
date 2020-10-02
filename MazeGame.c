@@ -6,7 +6,7 @@
 #include "MazePlayer.h"
 
 //迷路ゲーム
-void MazeGame(){
+void MazeGame(int menu){
     int goalCheck = 0;
     int mazeRow, mazeColumn;
 
@@ -16,8 +16,25 @@ void MazeGame(){
     //迷路
     MazeBlock *maze;
 
-    //迷路サイズ入力
-    MazeSizeInput(&mazeRow, &mazeColumn);
+    //迷路サイズ定義
+    switch(menu){
+        case EASY:
+            mazeRow = 11;
+            mazeColumn = 11;
+            break;
+        case NORMAL:
+            mazeRow = 21;
+            mazeColumn = 21;
+            break;
+        case HARD:
+            mazeRow = 41;
+            mazeColumn = 41;
+            break;
+        case CUSTOM:
+            //迷路サイズ入力
+            MazeSizeInput(&mazeRow, &mazeColumn);
+            break;
+    }
 
     //配列の動的確保
     maze = (MazeBlock *)malloc(sizeof(MazeBlock) * mazeRow * mazeColumn);

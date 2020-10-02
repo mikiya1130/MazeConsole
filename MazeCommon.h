@@ -1,7 +1,7 @@
 ﻿#pragma once
 
 //メニュー
-enum MazeMenu {GAMESTART, EXIT};
+enum MazeMenu {EASY, NORMAL, HARD, CUSTOM, EXIT};
 
 //マス目(プレイヤー座標、壁生成開始座標)
 typedef struct {

@@ -13,8 +13,12 @@ int MazeTitle(){
     printf("＊＊＊迷路ゲーム＊＊＊\n\n");
 
     printf("メニュー\n");
-    printf("%d:ゲーム開始\n", GAMESTART);
-    printf("%d:終了", EXIT);
+    printf("%d:EASY\n", EASY);
+    printf("%d:NORMAL\n", NORMAL);
+    printf("%d:HARD\n", HARD);
+    printf("%d:CUSTOM\n", CUSTOM);
+    printf("%d:EXIT\n\n", EXIT);
+    printf("数字で選択");
 
     while(menu < 0 || menu > EXIT){
         menu = _getch() - '0';
@@ -35,7 +39,7 @@ int main(void){
         }
 
         //迷路ゲーム
-        MazeGame();
+        MazeGame(menu);
     }
 
     return 0;
