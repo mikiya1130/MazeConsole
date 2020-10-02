@@ -24,17 +24,19 @@ int MazePlayerInit(int *playerRow, int *playerColumn, MazeBlock *maze, int mazeR
 
 //矢印キー入力取得用関数
 int getArrowKey(){
-    if(_getch() == 224){
-        switch(_getch()){
-            case 72: return UP;    break;
-            case 80: return DOWN;  break;
-            case 75: return LEFT;  break;
-            case 77: return RIGHT; break;
-            default: return Invalid; break;
-        }
+    int ch;
+
+    ch = _getch();
+    if(ch == 0x00 || ch == 0xe0){   //2バイト文字用
+        ch = _getch();
     }
-    else{
-        return Invalid;
+
+    switch(ch){
+        case 0x48: return UP;    break;
+        case 0x50: return DOWN;  break;
+        case 0x4b: return LEFT;  break;
+        case 0x4d: return RIGHT; break;
+        default: return Invalid; break;
     }
 }
 
