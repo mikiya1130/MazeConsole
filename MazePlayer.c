@@ -54,7 +54,7 @@ void MazePlayerMove(int *playerRow, int *playerColumn, MazeBlock *maze, int maze
         //上移動
         case UP:
             if(*playerRow - 1 >= 0){    //迷路の範囲外でないことを確認
-                maze[mazeColumn * ((*playerRow) - 1) + (*playerColumn)].flag = TRUE;    //ブロックの種類が判明
+                maze[mazeColumn * ((*playerRow) - 1) + (*playerColumn)].flag = _TRUE;    //ブロックの種類が判明
 
                 if(maze[mazeColumn * ((*playerRow) - 1) + (*playerColumn)].kind != WALL){   //壁かどうか確認
                     *playerRow -= 1;    //移動
@@ -65,7 +65,7 @@ void MazePlayerMove(int *playerRow, int *playerColumn, MazeBlock *maze, int maze
         //下移動
         case DOWN:
             if(*playerRow + 1 < mazeRow){    //迷路の範囲外でないことを確認
-                maze[mazeColumn * ((*playerRow) + 1) + (*playerColumn)].flag = TRUE;    //ブロックの種類が判明
+                maze[mazeColumn * ((*playerRow) + 1) + (*playerColumn)].flag = _TRUE;    //ブロックの種類が判明
 
                 if(maze[mazeColumn * ((*playerRow) + 1) + (*playerColumn)].kind != WALL){   //壁かどうか確認
                     *playerRow += 1;    //移動
@@ -76,7 +76,7 @@ void MazePlayerMove(int *playerRow, int *playerColumn, MazeBlock *maze, int maze
         //左移動
         case LEFT:
             if(*playerColumn - 1 >= 0){    //迷路の範囲外でないことを確認
-                maze[mazeColumn * (*playerRow) + ((*playerColumn) - 1)].flag = TRUE;    //ブロックの種類が判明
+                maze[mazeColumn * (*playerRow) + ((*playerColumn) - 1)].flag = _TRUE;    //ブロックの種類が判明
 
                 if(maze[mazeColumn * (*playerRow) + ((*playerColumn) - 1)].kind != WALL){   //壁かどうか確認
                     *playerColumn -= 1;    //移動
@@ -87,7 +87,7 @@ void MazePlayerMove(int *playerRow, int *playerColumn, MazeBlock *maze, int maze
         //右移動
         case RIGHT:
             if(*playerColumn + 1 < mazeColumn){    //迷路の範囲外でないことを確認
-                maze[mazeColumn * (*playerRow) + ((*playerColumn) + 1)].flag = TRUE;    //ブロックの種類が判明
+                maze[mazeColumn * (*playerRow) + ((*playerColumn) + 1)].flag = _TRUE;    //ブロックの種類が判明
 
                 if(maze[mazeColumn * (*playerRow) + ((*playerColumn) + 1)].kind != WALL){   //壁かどうか確認
                     *playerColumn += 1;    //移動

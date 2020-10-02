@@ -30,7 +30,8 @@ int MazeTitle(){
 int main(void){
     int menu;
 
-    printf("\033[?25l");    //カーソル非表示
+    //カーソル非表示
+    hideCursor();
 
     while(1){
         //メニュー選択
@@ -43,8 +44,6 @@ int main(void){
         //迷路ゲーム
         MazeGame(menu);
     }
-
-    printf("\033[?25h");    //カーソル表示
 
     return 0;
 }

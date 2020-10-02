@@ -11,7 +11,7 @@ typedef struct {
 
 //迷路の一ブロック
 enum MazeKind {PATH, WALL, EXWALL, START, GOAL};    //ブロックの種類(道、壁、スタート、ゴール)
-enum MazeFlag {FALSE, TRUE};                //ブロックが判明しているかどうか
+enum MazeFlag {_FALSE, _TRUE};                //ブロックが判明しているかどうか
 
 typedef struct {
     enum MazeKind kind; //種類(道、壁、スタート、ゴール)
@@ -23,3 +23,5 @@ enum MazeDirection {UP, DOWN, LEFT, RIGHT, Invalid};
 
 //プロトタイプ宣言
 void cls();
+void hideCursor();
+void showCursor();

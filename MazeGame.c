@@ -67,7 +67,7 @@ void MazeGame(int menu){
         case CUSTOM:
             for(i = 0; i < mazeRow; i++){
                 for(j = 0; j < mazeColumn; j++){
-                    maze[mazeColumn * i + j].flag = TRUE;
+                    maze[mazeColumn * i + j].flag = _TRUE;
                 }
             }
             break;
@@ -85,10 +85,10 @@ void MazeGame(int menu){
                         || maze[mazeColumn * i + j].kind == START
                         || maze[mazeColumn * i + j].kind == GOAL
                     ){
-                        maze[mazeColumn * i + j].flag = TRUE;
+                        maze[mazeColumn * i + j].flag = _TRUE;
                     }
                     else{
-                        maze[mazeColumn * i + j].flag = FALSE;
+                        maze[mazeColumn * i + j].flag = _FALSE;
                     }
                 }
             }
@@ -112,7 +112,7 @@ void MazeGame(int menu){
     //迷路最終結果表示
     for(i = 0; i < mazeRow; i++){
         for(j = 0; j < mazeColumn; j++){
-            maze[mazeColumn * i + j].flag = TRUE;   //道を全て表示
+            maze[mazeColumn * i + j].flag = _TRUE;   //道を全て表示
         }
     }
     MazeDraw(player.row, player.column, maze, mazeRow, mazeColumn);
@@ -130,7 +130,8 @@ void MazeSizeInput(int *mazeRow, int *mazeColumn){
     //コンソールクリア
     cls();
 
-    printf("\033[?25h");    //カーソル表示
+    //カーソル表示
+    showCursor();
 
     //高さ入力
     printf("迷路の高さを入力してください(5以上99以下の奇数)：");
@@ -157,7 +158,8 @@ void MazeSizeInput(int *mazeRow, int *mazeColumn){
         sscanf_s(buf, "%d", mazeColumn);
     }
 
-    printf("\033[?25l");    //カーソル非表示
+    //カーソル非表示
+    hideCursor();
 }
 
 //壁拡張可能方向リストの値を一括変更
@@ -229,20 +231,20 @@ void MazeCreate(MazeBlock *maze, int mazeRow, int mazeColumn){
         maze[mazeColumn * x + y].kind = EXWALL;
 
         //壁拡張可能方向リストをTRUEで初期化
-        resetArray(directions, sizeof(directions) / sizeof(directions[0]), TRUE);
+        resetArray(directions, sizeof(directions) / sizeof(directions[0]), _TRUE);
 
         //壁を生成拡張
         while(  //全ての方向が探索済みになるまで(1つ以上TRUEの間ループ)
-            directions[0] == TRUE
-            || directions[1] == TRUE
-            || directions[2] == TRUE
-            || directions[3] == TRUE
+            directions[0] == _TRUE
+            || directions[1] == _TRUE
+            || directions[2] == _TRUE
+            || directions[3] == _TRUE
         ){
             //拡張する方向
             dir = rand() % 4;
 
             //辿ってきた道 or 探索済みでないか判定
-            if(directions[dir] == FALSE){
+            if(directions[dir] == _FALSE){
                 continue;
             }
 
@@ -261,10 +263,10 @@ void MazeCreate(MazeBlock *maze, int mazeRow, int mazeColumn){
                         y -= 2;
 
                         //壁拡張可能方向リストをTRUEでリセット
-                        resetArray(directions, sizeof(directions) / sizeof(directions[0]), TRUE);
+                        resetArray(directions, sizeof(directions) / sizeof(directions[0]), _TRUE);
 
                         //下は辿ってきた道
-                        directions[DOWN] = FALSE;
+                        directions[DOWN] = _FALSE;
                     }
                     else if( //拡張可能なとき(2つ先が壁)
                         maze[mazeColumn * x + (y - 1)].kind == PATH
@@ -274,11 +276,11 @@ void MazeCreate(MazeBlock *maze, int mazeRow, int mazeColumn){
                         maze[mazeColumn * x + (y - 1)].kind = EXWALL;
 
                         //拡張終了(while文抜ける用にFALSE埋め)
-                        resetArray(directions, sizeof(directions) / sizeof(directions[0]), FALSE);
+                        resetArray(directions, sizeof(directions) / sizeof(directions[0]), _FALSE);
                     }
                     else{
                         //上は拡張不可
-                        directions[UP] = FALSE;
+                        directions[UP] = _FALSE;
                     }
                     break;
 
@@ -296,10 +298,10 @@ void MazeCreate(MazeBlock *maze, int mazeRow, int mazeColumn){
                         y += 2;
 
                         //壁拡張可能方向リストをTRUEでリセット
-                        resetArray(directions, sizeof(directions) / sizeof(directions[0]), TRUE);
+                        resetArray(directions, sizeof(directions) / sizeof(directions[0]), _TRUE);
 
                         //上は辿ってきた道
-                        directions[UP] = FALSE;
+                        directions[UP] = _FALSE;
                     }
                     else if( //拡張可能なとき(2つ先が壁)
                         maze[mazeColumn * x + (y + 1)].kind == PATH
@@ -309,11 +311,11 @@ void MazeCreate(MazeBlock *maze, int mazeRow, int mazeColumn){
                         maze[mazeColumn * x + (y + 1)].kind = EXWALL;
 
                         //拡張終了(while文抜ける用にFALSE埋め)
-                        resetArray(directions, sizeof(directions) / sizeof(directions[0]), FALSE);
+                        resetArray(directions, sizeof(directions) / sizeof(directions[0]), _FALSE);
                     }
                     else{
                         //下は拡張不可
-                        directions[DOWN] = FALSE;
+                        directions[DOWN] = _FALSE;
                     }
                     break;
 
@@ -331,10 +333,10 @@ void MazeCreate(MazeBlock *maze, int mazeRow, int mazeColumn){
                         x -= 2;
 
                         //壁拡張可能方向リストをTRUEでリセット
-                        resetArray(directions, sizeof(directions) / sizeof(directions[0]), TRUE);
+                        resetArray(directions, sizeof(directions) / sizeof(directions[0]), _TRUE);
 
                         //右は辿ってきた道
-                        directions[RIGHT] = FALSE;
+                        directions[RIGHT] = _FALSE;
                     }
                     else if( //拡張可能なとき(2つ先が壁)
                         maze[mazeColumn * (x - 1) + y].kind == PATH
@@ -344,11 +346,11 @@ void MazeCreate(MazeBlock *maze, int mazeRow, int mazeColumn){
                         maze[mazeColumn * (x - 1) + y].kind = EXWALL;
 
                         //拡張終了(while文抜ける用にFALSE埋め)
-                        resetArray(directions, sizeof(directions) / sizeof(directions[0]), FALSE);
+                        resetArray(directions, sizeof(directions) / sizeof(directions[0]), _FALSE);
                     }
                     else{
                         //左は拡張不可
-                        directions[LEFT] = FALSE;
+                        directions[LEFT] = _FALSE;
                     }
                     break;
 
@@ -366,10 +368,10 @@ void MazeCreate(MazeBlock *maze, int mazeRow, int mazeColumn){
                         x += 2;
 
                         //壁拡張可能方向リストをTRUEでリセット
-                        resetArray(directions, sizeof(directions) / sizeof(directions[0]), TRUE);
+                        resetArray(directions, sizeof(directions) / sizeof(directions[0]), _TRUE);
 
                         //左は辿ってきた道
-                        directions[LEFT] = FALSE;
+                        directions[LEFT] = _FALSE;
                     }
                     else if( //拡張可能なとき(2つ先が壁)
                         maze[mazeColumn * (x + 1) + y].kind == PATH
@@ -379,11 +381,11 @@ void MazeCreate(MazeBlock *maze, int mazeRow, int mazeColumn){
                         maze[mazeColumn * (x + 1) + y].kind = EXWALL;
 
                         //拡張終了(while文抜ける用にFALSE埋め)
-                        resetArray(directions, sizeof(directions) / sizeof(directions[0]), FALSE);
+                        resetArray(directions, sizeof(directions) / sizeof(directions[0]), _FALSE);
                     }
                     else{
                         //右は拡張不可
-                        directions[RIGHT] = FALSE;
+                        directions[RIGHT] = _FALSE;
                     }
                     break;
             }
@@ -418,7 +420,7 @@ void MazeDraw(int playerRow, int playerColumn, MazeBlock *maze, int mazeRow, int
                 printf("●");
                 printf("\033[39m"); //元に戻す
             }
-            else if(maze[mazeColumn * i + j].flag == FALSE){   //ブロックが判明していない場合
+            else if(maze[mazeColumn * i + j].flag == _FALSE){   //ブロックが判明していない場合
                 printf("？");
             }
             else{
