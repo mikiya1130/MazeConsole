@@ -14,9 +14,13 @@ int MazeTitle(){
 
     printf("メニュー\n");
     printf("%d:EASY\n", EASY);
+    printf("%d:EASY(HIDE)\n", EASY_H);
     printf("%d:NORMAL\n", NORMAL);
+    printf("%d:NORMAL(HIDE)\n", NORMAL_H);
     printf("%d:HARD\n", HARD);
+    printf("%d:HARD(HIDE)\n", HARD_H);
     printf("%d:CUSTOM\n", CUSTOM);
+    printf("%d:CUSTOM(HIDE)\n", CUSTOM_H);
     printf("%d:EXIT\n\n", EXIT);
     printf("数字で選択");
 

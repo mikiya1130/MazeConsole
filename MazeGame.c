@@ -7,6 +7,7 @@
 
 //迷路ゲーム
 void MazeGame(int menu){
+    int i, j;
     int goalCheck = 0;
     int mazeRow, mazeColumn;
 
@@ -19,18 +20,22 @@ void MazeGame(int menu){
     //迷路サイズ定義
     switch(menu){
         case EASY:
+        case EASY_H:
             mazeRow = 11;
             mazeColumn = 11;
             break;
         case NORMAL:
+        case NORMAL_H:
             mazeRow = 21;
             mazeColumn = 21;
             break;
         case HARD:
+        case HARD_H:
             mazeRow = 41;
             mazeColumn = 41;
             break;
         case CUSTOM:
+        case CUSTOM_H:
             //迷路サイズ入力
             MazeSizeInput(&mazeRow, &mazeColumn);
             break;
@@ -52,6 +57,43 @@ void MazeGame(int menu){
 
     //壁伸ばし法で迷路生成
     MazeCreate(maze, mazeRow, mazeColumn);
+
+    //迷路を隠すか否か
+    switch(menu){
+        //HIDEモードでないとき
+        case EASY:
+        case NORMAL:
+        case HARD:
+        case CUSTOM:
+            for(i = 0; i < mazeRow; i++){
+                for(j = 0; j < mazeColumn; j++){
+                    maze[mazeColumn * i + j].flag = TRUE;
+                }
+            }
+            break;
+
+        //HIDEモードのとき
+        case EASY_H:
+        case NORMAL_H:
+        case HARD_H:
+        case CUSTOM_H:
+            for(i = 0; i < mazeRow; i++){
+                for(j = 0; j < mazeColumn; j++){
+                    if( //周囲とSTART,GOALは表示
+                        i == 0 || i == mazeRow - 1
+                        || j == 0 || j == mazeColumn - 1
+                        || maze[mazeColumn * i + j].kind == START
+                        || maze[mazeColumn * i + j].kind == GOAL
+                    ){
+                        maze[mazeColumn * i + j].flag = TRUE;
+                    }
+                    else{
+                        maze[mazeColumn * i + j].flag = FALSE;
+                    }
+                }
+            }
+            break;
+    }
 
     //プレイヤー初期化
     if(MazePlayerInit(&player.row, &player.column, maze, mazeRow, mazeColumn) == -1){
