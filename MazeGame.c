@@ -196,7 +196,7 @@ void MazeCreate(MazeBlock *maze, int mazeRow, int mazeColumn){
             }
 
             switch(dir){
-                //上に移動
+                //上に拡張
                 case UP:
                     if( //拡張可能なとき(2つ先まで道)
                         maze[mazeColumn * x + (y - 1)].kind == PATH
@@ -231,7 +231,7 @@ void MazeCreate(MazeBlock *maze, int mazeRow, int mazeColumn){
                     }
                     break;
 
-                //下に移動
+                //下に拡張
                 case DOWN:
                     if( //拡張可能なとき(2つ先まで道)
                         maze[mazeColumn * x + (y + 1)].kind == PATH
@@ -266,7 +266,7 @@ void MazeCreate(MazeBlock *maze, int mazeRow, int mazeColumn){
                     }
                     break;
 
-                //左に移動
+                //左に拡張
                 case LEFT:
                     if( //拡張可能なとき(2つ先まで道)
                         maze[mazeColumn * (x - 1) + y].kind == PATH
@@ -301,7 +301,7 @@ void MazeCreate(MazeBlock *maze, int mazeRow, int mazeColumn){
                     }
                     break;
 
-                //右に移動
+                //右に拡張
                 case RIGHT:
                     if( //拡張可能なとき(2つ先まで道)
                         maze[mazeColumn * (x + 1) + y].kind == PATH
