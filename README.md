@@ -25,7 +25,7 @@ C言語の知識を深めること、GitおよびGithubに慣れることを目�
 
 ## 遊び方
 
-1. Download Zipか`git clone`して`Release/MazeConsole.exe`を実行
+1. 好きな方法でダウンロードして`Release/MazeConsole.exe`を実行
 2. モードを選択(対応する数字を入力)
 3. CUSTOMモードを選択した場合は、迷路の高さと幅を5以上99以下の奇数で入力する(Enterで入力値を確定)
 4. ゲームが開始するので矢印キーで移動(●を○まで移動させる)
